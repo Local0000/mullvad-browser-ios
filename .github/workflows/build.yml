@@ -1,3 +1,4 @@
+
 name: Build Mullvad Browser
 
 on:
@@ -25,7 +26,22 @@ jobs:
       - name: Install dependencies
         run: pod install
 
-      - name: List available schemes
+      - name: Build iPhone app
         run: |
-          xcodebuild -list \
-            -workspace MullvadBrowser.xcworkspace
+          xcodebuild \
+            -workspace MullvadBrowser.xcworkspace \
+            -scheme MullvadBrowser \
+            -configuration Debug \
+            -sdk iphoneos \
+            -derivedDataPath build/DerivedData \
+            CODE_SIGNING_ALLOWED=NO \
+            build
+
+      - name: Upload app build
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: MullvadBrowser-iOS-unsigned
+          path: build/DerivedData/Build/Products/Debug-iphoneos/MullvadBrowser.app
+          if-no-files-found: error
+          retention-days: 7
