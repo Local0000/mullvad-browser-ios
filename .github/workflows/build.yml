@@ -1,4 +1,5 @@
 
+
 name: Build Mullvad Browser
 
 on:
@@ -34,14 +35,23 @@ jobs:
             -configuration Debug \
             -sdk iphoneos \
             -derivedDataPath build/DerivedData \
+            PRODUCT_BUNDLE_IDENTIFIER=com.local0000.mullvadbrowser \
             CODE_SIGNING_ALLOWED=NO \
             build
 
-      - name: Upload app build
+      - name: Package unsigned IPA
+        if: success()
+        run: |
+          mkdir -p build/Payload
+          cp -R build/DerivedData/Build/Products/Debug-iphoneos/MullvadBrowser.app build/Payload/
+          cd build
+          /usr/bin/zip -qr MullvadBrowser-iOS-unsigned.ipa Payload
+
+      - name: Upload unsigned IPA
         if: success()
         uses: actions/upload-artifact@v4
         with:
           name: MullvadBrowser-iOS-unsigned
-          path: build/DerivedData/Build/Products/Debug-iphoneos/MullvadBrowser.app
+          path: build/MullvadBrowser-iOS-unsigned.ipa
           if-no-files-found: error
           retention-days: 7
