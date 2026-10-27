@@ -35,7 +35,6 @@ jobs:
             -configuration Debug \
             -sdk iphoneos \
             -derivedDataPath build/DerivedData \
-            PRODUCT_BUNDLE_IDENTIFIER=com.local0000.mullvadbrowser \
             CODE_SIGNING_ALLOWED=NO \
             build
 
